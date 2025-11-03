@@ -152,6 +152,42 @@ Hazlo para el data frame con observaciones completas `clean_iris` (que no tiene 
   * Compara los resultados para los dos conjuntos en la variable `Petal.Length`.
 
 ```{r , include = TRUE}
+library(dplyr)
+
+madm <- function(x) {
+  med <- median(x, na.rm = TRUE)
+  1.4826 * median(abs(x - med), na.rm = TRUE)
+}
+
+clean_iris %>%
+    summarise(
+      across(
+        where(is.numeric),
+        
+        list(
+          mean = ~ mean(.x),
+          sd = ~ sd(.x),
+          median = ~ median(.x),
+          MADM = ~ madm(.x),
+          IQR = ~ IQR(.x)
+        )
+      ))
+
+stats_dirty <- dirty_iris %>%
+  summarise(
+    across(
+      where(is.numeric),
+      list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        sd = ~ sd(.x, na.rm = TRUE),
+        median = ~ median(.x, na.rm = TRUE),
+        MADM = ~ madm(.x),
+        IQR = ~ IQR(.x, na.rm = TRUE)
+      )
+    )
+  )
+
+stats_dirty
 
 ```
 
