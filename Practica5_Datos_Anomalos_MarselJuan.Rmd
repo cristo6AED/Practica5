@@ -206,16 +206,67 @@ Escribe una función que detecte los outliers de un vector $x$ para cada uno de 
 
 ```{r , include = FALSE}
 # Regla 3 sigma
-
+reglasigma <- function(datos){
+  mu <- mean(datos, na.rm = TRUE)       # media ignorando NA
+  sigma <- sd(datos, na.rm = TRUE)      # desviación típica ignorando NA
+  
+  # Crear vector lógico: TRUE si es outlier, FALSE si no
+  outliers <- abs(datos - mu) > 3 * sigma
+  
+  # Mantener NA en su posición original
+  outliers[is.na(datos)] <- NA
+  
+  return(outliers)
+  
+}
 
 # Identificador Hampel
 
-
+reglahampel <- function(datos){
+  mediana <- median(datos, na.rm=TRUE)
+  dispersión <- madm(datos)
+  
+  outliers <- abs(datos - med) > 3 * mediana
+  
+  outliers[is.na(x)] <- NA
+  
+  return(outliers)
+}
 
 # Regla boxplot
+reglaboxplot <- function(x) {
+  # Calcular cuartiles ignorando NA
+  q <- quantile(x, probs = c(0.25, 0.75), na.rm = TRUE)
+  x_i <- q[1]   # Q1
+  x_s <- q[2]   # Q3
+  iqr <- x_s - x_i
+  
+  # Detectar outliers
+  outliers <- (x < (x_i - 1.5 * iqr)) | (x > (x_s + 1.5 * iqr))
+  
+  # Mantener NA en su posición original
+  outliers[is.na(x)] <- NA
+  
+  return(outliers)
+}
 
 
 # Percentiles
+reglapercentil <- function(x) {
+  # Calcular percentiles 5% y 95%
+  p <- quantile(x, probs = c(0.05, 0.95), na.rm = TRUE)
+  lower <- p[1]
+  upper <- p[2]
+  
+  # Detectar outliers
+  outliers <- (x < lower) | (x > upper)
+  
+  # Mantener NA en su posición original
+  outliers[is.na(x)] <- NA
+  
+  return(outliers)
+}
+
 
 ```
 
